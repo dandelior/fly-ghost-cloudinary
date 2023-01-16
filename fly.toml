@@ -1,0 +1,60 @@
+app = "ghost-with-cloudinary" # name of the app
+
+[env]
+  CLOUDINARY_URL = "cloudinary://..." # Cloudinary Url (replace for yours)
+  NODE_ENV = "development"
+  database__client = "sqlite3"
+  database__connection__filename = "/var/lib/ghost/content/data/ghost.db"
+  imageOptimization__resize = "false"
+  logging__level = "info"
+  logging__rotation__enabled = "false"
+  logging__transports = ["stdout"]
+  paths__contentPath = "/var/lib/ghost/content/"
+  privacy__useGravatar = "true"
+  privacy__useRpcPing = "true"
+  privacy__useStructuredData = "true"
+  privacy__useUpdateCheck = "true"
+  server__host = "0.0.0.0"
+  storage__active = "ghost-storage-cloudinary"
+  storage__ghost-storage-cloudinary__auth__api_key = "API_KEY" # replace for yours
+  storage__ghost-storage-cloudinary__auth__api_secret = "API_SECRET" # replace for yours
+  storage__ghost-storage-cloudinary__auth__cloud_name = "CLOUD_NAME" # replace for yours
+  storage__ghost-storage-cloudinary__fetch__cdn_subdomain = "true"
+  storage__ghost-storage-cloudinary__fetch__secure = "true"
+  storage__ghost-storage-cloudinary__upload__folder = "blog" # folder on Cloudinary where images are hosted
+  storage__ghost-storage-cloudinary__upload__overwrite = "false"
+  storage__ghost-storage-cloudinary__upload__tags = ["blog"]
+  storage__ghost-storage-cloudinary__upload__unique_filename = "false"
+  storage__ghost-storage-cloudinary__upload__use_filename = "true"
+  storage__ghost-storage-cloudinary__useDatedFolder = "false"
+  url = "https://ghost-with-cloudinary.fly.dev" # Url that will be the one of your website (must end in '.fly.dev')
+
+[mounts]
+  destination = "/var/lib/ghost/content/data"
+  source = "ghost_with_cloudinary_data" # It must match the parameter we passed when executing 'fly volume create'
+
+[[services]]
+  http_checks = []
+  internal_port = 2368
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"

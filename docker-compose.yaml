@@ -1,0 +1,18 @@
+services:
+  blog:
+    image: blog
+    build:
+      context: .
+      args:
+        GHOST_VERSION: 5.29
+        ADAPTER_VERSION: v2.2.5
+    ports:
+      - '2368:2368'
+    volumes:
+      - ./ghost.db:/var/lib/ghost/content/data/ghost.db
+      - ./config.development.json:/var/lib/ghost/config.development.json
+    environment:
+      DEBUG: ghost:*,ghost-config,ghost-storage-cloudinary:*
+      NODE_ENV: development
+      # Your Cloudinary URL
+      CLOUDINARY_URL: cloudinary://...
